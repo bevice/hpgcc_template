@@ -1,0 +1,35 @@
+CMAKE_MINIMUM_REQUIRED(VERSION 3.6)
+
+include(hpgcc.cmake)
+PROJECT(hpgcc_template)
+
+
+#SET(CMAKE_VERBOSE_MAKEFILE ON)
+
+
+SET(PROJECT_SOURCES
+        src/hiworld.c
+        )
+
+
+# Добавляем пути поиска заголовочных файлов
+INCLUDE_DIRECTORIES(
+        ${PROJECT_SOURCE_DIR}/src/
+)
+
+
+# Собираем исходники пректа, модули, и т.д. в elf
+ADD_EXECUTABLE(${CMAKE_PROJECT_NAME}.elf
+        ${STARTUP_SOURCES}
+        ${PROJECT_SOURCES}
+        )
+
+
+# Конвертируем elf в hex и bin
+
+ADD_CUSTOM_COMMAND(TARGET ${CMAKE_PROJECT_NAME}.elf POST_BUILD COMMAND ${CMAKE_ELF2HP} ARGS ${CMAKE_PROJECT_NAME}.elf ${CMAKE_PROJECT_NAME}.hp)
+
+
+# ADD_CUSTOM_COMMAND(TARGET ${CMAKE_PROJECT_NAME}.elf POST_BUILD COMMAND ${CMAKE_OBJCOPY} ARGS -Obinary ${CMAKE_PROJECT_NAME}.elf ${CMAKE_PROJECT_NAME}.bin)
+# ADD_CUSTOM_COMMAND(TARGET ${CMAKE_PROJECT_NAME}.elf POST_BUILD COMMAND ${CMAKE_SIZE} ARGS --format=sysv ${CMAKE_PROJECT_NAME}.elf)
+# ADD_CUSTOM_COMMAND(TARGET ${CMAKE_PROJECT_NAME}.elf POST_BUILD COMMAND ${CMAKE_SIZE} ARGS --format=berkeley ${CMAKE_PROJECT_NAME}.elf)
